@@ -1,10 +1,11 @@
 import React from "react";
+import "./style.css";
 
 function Nav() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-dark bg-dark">
       <a className="navbar-brand" href="/">
-        React Reading List
+        Search for and save Books info using Google Books API!
       </a>
     </nav>
   );
