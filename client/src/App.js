@@ -4,18 +4,31 @@ import Nav from "./components/Nav";
 import Input from "./components/Input";
 import Button from "./components/Button";
 import API from "./utils/API";
-import { RecipeList, RecipeListItem } from "./components/RecipeList";
+import { BookList, BookListItem } from "./components/BookList";
 import { Container, Row, Col } from "./components/Grid";
 
 class App extends Component {
   state = {
-    recipes: [],
-    recipeSearch: ""
+    books: [],
+    bookSearch: ""
   };
 
+  removeBook = id => {
+    //need to change this to mongoose id instead, as well as get mongoose db to render page
+    console.log(id)
+    console.log(this.state.books[0].industryIdentifiers[0].identifier)
+    const books = this.state.books.filter(book => book.industryIdentifiers[0].identifier !== id);
+    console.log(this.state.books.filter(book => book.id !== id))
+    console.log(this.state.books)
+    API.deleteBook(id);
+    this.setState({ books : books });
+  };
+
+  saveBook = id => {
+    //put it in mongo database
+  }
+
   handleInputChange = event => {
-    // Destructure the name and value properties off of event.target
-    // Update the appropriate state
     const { name, value } = event.target;
     this.setState({
       [name]: value
@@ -23,21 +36,13 @@ class App extends Component {
   };
 
   handleFormSubmit = event => {
-    // When the form is submitted, prevent its default behavior, get recipes update the recipes state
     event.preventDefault();
-    // API.getRecipes(this.state.recipeSearch)
-    //   .then(res => console.log(res)) 
-    //   // res => this.setState({ recipes: res.data }))
-    //   .catch(err => console.log(err));
-    API.getRecipes(this.state.recipeSearch).then(res => {
+    API.getBooks(this.state.bookSearch).then(res => {
       var newArr= []
       for (var i=0; i< res.data.items.length; i++){
-        console.log(res.data.items[i].volumeInfo)
         newArr.push(res.data.items[i].volumeInfo)
       }
-      console.log(res.data.items[0])
-      this.setState({recipes: newArr })
-      console.log(this.state.recipes)
+      this.setState({ books: newArr })
     })
   };
   
@@ -54,10 +59,10 @@ class App extends Component {
                   <Row>
                     <Col size="xs-9 sm-10">
                       <Input
-                        name="recipeSearch"
-                        value={this.state.recipeSearch}
+                        name="bookSearch"
+                        value={this.state.bookSearch}
                         onChange={this.handleInputChange}
-                        placeholder="Search For a Recipe"
+                        placeholder="Search For a Book"
                       />
                     </Col>
                     <Col size="xs-3 sm-2">
@@ -76,23 +81,25 @@ class App extends Component {
           </Row>
           <Row>
             <Col size="xs-12">
-              {!this.state.recipes.length ? (
+              {!this.state.books.length ? (
                 <h1 className="text-center">No Books to Display</h1>
               ) : (
-                <RecipeList>
-                  {this.state.recipes.map(recipe => {
+                <BookList>
+                  {this.state.books.map(book => {
                     return (
-                      <RecipeListItem
-                        key={recipe.title}
-                        title={recipe.title}
-                        authors={recipe.authors.join(", ")}
-                        href={recipe.infoLink}
-                        ingredients={recipe.description}
-                        thumbnail={recipe.imageLinks.smallThumbnail}
+                      <BookListItem
+                        key={book.title}
+                        id={book.industryIdentifiers[0].identifier}
+                        removeBook={this.removeBook}
+                        title={book.title}
+                        authors={book.authors.join(", ")}
+                        href={book.infoLink}
+                        description={book.description}
+                        thumbnail={book.imageLinks.smallThumbnail}
                       />
                     );
                   })}
-                </RecipeList>
+                </BookList>
               )}
             </Col>
           </Row>
@@ -103,3 +110,4 @@ class App extends Component {
 }
 
 export default App;
+
