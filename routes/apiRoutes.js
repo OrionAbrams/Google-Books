@@ -1,27 +1,44 @@
 const axios = require("axios");
 const router = require("express").Router();
 const db = require("../models")
-var newArr= []
+var newArr = []
 const apiKey = "AIzaSyDuLe6erooqM6DzaLkOEiL7d26Wq0SulS0"
 router.get("/books", (req, res) => {
   console.log(req.query)
   console.log(req.body)
   console.log(("https://www.googleapis.com/books/v1/volumes?q=" + req.query.q + "&key=" + apiKey))
   axios
-    .get("https://www.googleapis.com/books/v1/volumes?q=" + req.query.q  + "&key=" + apiKey, {
-    headers: {
-      'Content-Type': 'application/json',
-  }})
+    .get("https://www.googleapis.com/books/v1/volumes?q=" + req.query.q + "&key=" + apiKey, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
     .then((results) => {
+
       res.json(results.data);
-      for (var i=0; i< results.data.items.length; i++){
+      for (var i = 0; i < results.data.items.length; i++) {
         newArr.push(results.data.items[i].volumeInfo)
       }
- // images are in here now but still have to use mongoDB to render things
-      db.Book.create(newArr).then(() => {
-        for (var i=0; i< newArr.length; i++){
-      db.Book.findOneAndUpdate({'title': newArr[i].title}, {'image' : newArr[i].imageLinks.thumbnail})
-        }
+      db.Book.remove({}).then(() => {
+        // images are in here now but still have to use mongoDB to render things
+        db.Book.create(newArr).then(() => {
+          for (var i = 0; i < newArr.length; i++) {
+            db.Book.findOneAndUpdate({'title': newArr[i].title }, {'image': newArr[i].imageLinks.thumbnail}, function (error, found) {
+              if (error) {
+                console.log(error);
+                res.send(error);
+              }
+              else {
+                console.log(found)
+              }
+            })
+          }
+        }).then(() => {
+            db.Book.findOne({ 'title': newArr[0].title }).then((data) => {
+              console.log(data)
+              // res.json(data)
+            })
+          })
       })
     })
     .catch(err => res.status(422).json(err));
