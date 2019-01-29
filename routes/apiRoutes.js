@@ -17,9 +17,12 @@ router.get("/books", (req, res) => {
       for (var i=0; i< results.data.items.length; i++){
         newArr.push(results.data.items[i].volumeInfo)
       }
-      console.log(newArr);
-      // i tried to find a way to get image url into database easily here, not so easy. can get an async npm to wait for each update... for now i will just manually take out/put in images
-      db.Book.create(newArr).then(() => db.Book.update({}, {image : newArr[0].imageLinks.smallThumbnail}, {multi: true}))
+ // images are in here now but still have to use mongoDB to render things
+      db.Book.create(newArr).then(() => {
+        for (var i=0; i< newArr.length; i++){
+      db.Book.findOneAndUpdate({'title': newArr[i].title}, {'image' : newArr[i].imageLinks.thumbnail})
+        }
+      })
     })
     .catch(err => res.status(422).json(err));
 });
