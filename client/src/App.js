@@ -21,7 +21,7 @@ class App extends Component {
     console.log(this.state.books.filter(book => book.id !== id))
     console.log(this.state.books)
     API.deleteBook(id);
-    this.setState({ books : books });
+    this.setState({ books: books });
   };
 
   saveBook = id => {
@@ -38,14 +38,19 @@ class App extends Component {
   handleFormSubmit = event => {
     event.preventDefault();
     API.getBooks(this.state.bookSearch).then(res => {
-      var newArr= []
-      for (var i=0; i< res.data.items.length; i++){
-        newArr.push(res.data.items[i].volumeInfo)
+      var newArr = []
+      console.log(res.data)
+      for (var i = 0; i < res.data.items.length; i++) {
+        if (res.data.items[i].volumeInfo.imageLinks &&
+          res.data.items[i].volumeInfo.authors &&
+          res.data.items[i].volumeInfo.description) {
+            newArr.push(res.data.items[i].volumeInfo)
+        }
       }
       this.setState({ books: newArr })
     })
   };
-  
+
   render() {
     return (
       <div>
@@ -84,23 +89,23 @@ class App extends Component {
               {!this.state.books.length ? (
                 <h1 className="text-center">No Books to Display</h1>
               ) : (
-                <BookList>
-                  {this.state.books.map(book => {
-                    return (
-                      <BookListItem
-                        key={book.title}
-                        id={book.industryIdentifiers[0].identifier}
-                        removeBook={this.removeBook}
-                        title={book.title}
-                        authors={book.authors.join(", ")}
-                        href={book.infoLink}
-                        description={book.description}
-                        thumbnail={book.imageLinks.smallThumbnail}
-                      />
-                    );
-                  })}
-                </BookList>
-              )}
+                  <BookList>
+                    {this.state.books.map(book => {
+                      return (
+                        <BookListItem
+                          key={book.title}
+                          id={book.industryIdentifiers[0].identifier}
+                          removeBook={this.removeBook}
+                          title={book.title}
+                          authors={book.authors.join(", ")}
+                          href={book.infoLink}
+                          description={book.description}
+                          thumbnail={book.imageLinks.thumbnail}
+                        />
+                      );
+                    })}
+                  </BookList>
+                )}
             </Col>
           </Row>
         </Container>
