@@ -110,7 +110,7 @@ class App extends Component {
                     {this.state.books.map(book => {
                       return (
                         <BookListItem
-                          key={book.title}
+                          key={book._id}
                           id={book._id}
                           removeBook={this.removeBook}
                           title={book.title}
