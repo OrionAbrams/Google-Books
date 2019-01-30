@@ -13,6 +13,13 @@ class App extends Component {
     bookSearch: ""
   };
 
+  componentDidMount(){
+    API.getAllBooks()
+    .then(res => {
+      console.log(res.data)
+      this.setState({ books: res.data })
+    })
+  }
   removeBook = id => {
     //need to change this to mongoose id instead, as well as get mongoose db to render page
     console.log(id)
@@ -103,7 +110,7 @@ class App extends Component {
                     {this.state.books.map(book => {
                       return (
                         <BookListItem
-                          key={book._id}
+                          key={book.title}
                           id={book._id}
                           removeBook={this.removeBook}
                           title={book.title}
