@@ -31,10 +31,14 @@ class App extends Component {
     });
   };
 
+  deleteAllSaved(){
+    API.deleteSaved()
+    .then(() => {
+      alert("All saved books deleted!")
+    })
+  }
   saveBook = id => {
     API.saveBook(id)
-    // .then((data) => {
-    //   API.getAllSavedBooks()
     .then(res => {
       API.getAllSavedBooks().then((res) => {
         console.log(res.data)
@@ -43,19 +47,15 @@ class App extends Component {
       
     })
     .catch(err => console.log(err));
-    // });
   };
 
   displaySaved = id => {
     API.getAllSavedBooks()
-    // .then((data) => {
-    //   API.getAllSavedBooks()
     .then(res => {
       console.log(res.data)
       this.setState({ books: res.data })
     })
     .catch(err => console.log(err));
-    // });
   };
 
   handleInputChange = event => {
@@ -133,6 +133,7 @@ class App extends Component {
             </Col>
           </Row>
         </Container>
+        <button onClick={this.deleteAllSaved}>Delete All Saved Books?</button>
       </div>
     );
   }

@@ -37,7 +37,6 @@ router.get("/books", (req, res) => {
           }
         }).then(() => {
           db.Book.find({}).then((data) => {
-            // console.log(data)
             res.json(data)
           })
         })
@@ -48,13 +47,19 @@ router.get("/books", (req, res) => {
 
 router.get("/books/all", (req, res) => {
   db.Book.find({}).then((data) => {
-    // console.log(data)
     res.json(data)
   })
 })
 
 router.get("/books/saved/all", (req, res) => {
   db.Savedbook.find({}).then((data) => {
+    console.log(data)
+    res.json(data)
+  })
+})
+
+router.delete("/books/deletesaved", (req, res) => {
+  db.Savedbook.remove({}).then((data) => {
     console.log(data)
     res.json(data)
   })
@@ -71,17 +76,15 @@ router.post("/books/saved/:id", function (req, res) {
         image: dbBook.image,
         infoLink: dbBook.infoLink
       }
-      // dupeArr.push(usableObject)
-      // console.log(usableObject)
     })
-      .then(() => {
-        console.log(usableObject)
-        db.Savedbook.create(usableObject)
-      }).then(function (dbBook) {
-              res.json(dbBook);
-            })
-      
+    .then(() => {
+      console.log(usableObject)
+      db.Savedbook.create(usableObject)
+    }).then(function (dbBook) {
+      res.json(dbBook);
     })
+
+})
 
 router.delete("/books/:id", function (req, res) {
 
@@ -98,16 +101,3 @@ router.delete("/books/:id", function (req, res) {
 
 
 module.exports = router;
-
-//saveBook pseudocode
-// post for /books
-
-
-// get post request from client 
-// get id from request
-// find the book with their id by matching
-// if not found, send err
-// if found, send back successful
-// maybe show them in front end alert
-
-// must save book that was found to a favorities database
