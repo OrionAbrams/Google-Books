@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const bookSchema = new Schema({
+const savedbookSchema = new Schema({
   title: String,
   authors: {
     type: String,
@@ -17,11 +17,12 @@ const bookSchema = new Schema({
   },
   infoLink: {
     type: String,
-    default: "https://placehold.it/300x300"
+    default: "https://placehold.it/300x300",
+    unique: true
   },
   date: { type: Date, default: Date.now }
 });
 
-const Book = mongoose.model("Book", bookSchema);
+const Savedbook = mongoose.model("Savedbook", savedbookSchema);
 
-module.exports = Book;
+module.exports = Savedbook;

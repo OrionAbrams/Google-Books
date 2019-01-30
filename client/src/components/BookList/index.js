@@ -10,17 +10,7 @@ export function BookList({ children }) {
 }
 
 // RecipeListItem renders a bootstrap list item containing data from the recipe api call
-export function BookListItem(props
-  
-//   {
-//   thumbnail = "https://placehold.it/300x300",
-//   title,
-//   ingredients,
-//   href,
-//   authors,
-//   id
-// }
-) {
+export function BookListItem(props) {
   return (
     <li className="list-group-item">
       <Container>
@@ -30,8 +20,8 @@ export function BookListItem(props
           </Col>
           <Col size="xs-8 sm-9">
             <h3>{props.title}</h3>
-            <p>Authors: {props.authors}</p>
-            <p>Ingredients: {props.description}</p>
+            <p>Authors: {props.authors.split(",").join(", ")}</p>
+            <p>Synopsis: {props.description}</p>
             <a rel="noreferrer noopener" target="_blank" href={props.href}>
               More book information at Google Books!
             </a>
@@ -47,13 +37,3 @@ export function BookListItem(props
     </li>
   );
 }
-// for each book put id of book from database on the button
-// user clicks delete
-// get id from button
-// send book id to server
-// match id with database
-// delete record if exists
-// send response back to user
-// if response successful, user sends request to server for getting the database
-// if request successful, send back whole database
-// render database to user

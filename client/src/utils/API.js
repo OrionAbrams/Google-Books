@@ -10,6 +10,9 @@ export default {
   getAllBooks: function (bookData) {
     return axios.get("/api/books/all", bookData);
   },
+  getAllSavedBooks: function (bookData) {
+    return axios.get("/api/books/saved/all", bookData);
+  },
   // Gets the book with the given id
   getBook: function (id) {
     return axios.get("/api/books/" + id);
@@ -19,8 +22,8 @@ export default {
     return axios.delete("/api/books/" + id);
   },
   // Saves a book to the database
-  saveBook: function (bookData) {
-    return axios.post("/api/books", bookData);
+  saveBook: function (id) {
+    return axios.post("/api/books/saved/" + id);
   }
 };
 

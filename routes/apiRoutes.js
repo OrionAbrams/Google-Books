@@ -1,8 +1,8 @@
 const axios = require("axios");
 const router = require("express").Router();
 const db = require("../models")
-
 const apiKey = "AIzaSyDuLe6erooqM6DzaLkOEiL7d26Wq0SulS0"
+var usableObject
 router.get("/books", (req, res) => {
   console.log(req.query)
   console.log(req.body)
@@ -19,14 +19,13 @@ router.get("/books", (req, res) => {
         newArr.push(results.data.items[i].volumeInfo)
       }
       db.Book.remove({}).then(() => {
-        // images are in here now but still have to use mongoDB to render things
         db.Book.create(newArr).then(() => {
-          
+          //trying to make an undefined image in mongoose breaks whole app, so this skips past books apis without images
           for (var i = 0; i < newArr.length; i++) {
-            if (!newArr[i].imageLinks){
+            if (!newArr[i].imageLinks) {
               i++
             }
-            db.Book.findOneAndUpdate({'title': newArr[i].title }, {'image': newArr[i].imageLinks.thumbnail}, function (error, found) {
+            db.Book.findOneAndUpdate({ 'title': newArr[i].title }, { 'image': newArr[i].imageLinks.thumbnail }, function (error, found) {
               if (error) {
                 console.log(error);
                 res.send(error);
@@ -37,11 +36,11 @@ router.get("/books", (req, res) => {
             })
           }
         }).then(() => {
-            db.Book.find({}).then((data) => {
-              // console.log(data)
-              res.json(data)
-            })
+          db.Book.find({}).then((data) => {
+            // console.log(data)
+            res.json(data)
           })
+        })
       })
     })
     .catch(err => res.status(422).json(err));
@@ -53,6 +52,36 @@ router.get("/books/all", (req, res) => {
     res.json(data)
   })
 })
+
+router.get("/books/saved/all", (req, res) => {
+  db.Savedbook.find({}).then((data) => {
+    console.log(data)
+    res.json(data)
+  })
+})
+
+router.post("/books/saved/:id", function (req, res) {
+  db.Book.findById(req.params.id)
+    .then((dbBook) => {
+      var dupeArr = []
+      usableObject = {
+        authors: dbBook.authors,
+        description: dbBook.description,
+        title: dbBook.title,
+        image: dbBook.image,
+        infoLink: dbBook.infoLink
+      }
+      // dupeArr.push(usableObject)
+      // console.log(usableObject)
+    })
+      .then(() => {
+        console.log(usableObject)
+        db.Savedbook.create(usableObject)
+      }).then(function (dbBook) {
+              res.json(dbBook);
+            })
+      
+    })
 
 router.delete("/books/:id", function (req, res) {
 
