@@ -16,15 +16,32 @@ class App extends Component {
   removeBook = id => {
     //need to change this to mongoose id instead, as well as get mongoose db to render page
     console.log(id)
-    console.log(this.state.books[0].industryIdentifiers[0].identifier)
-    const books = this.state.books.filter(book => book.industryIdentifiers[0].identifier !== id);
+    console.log(this.state.books[0]._id)
+    // const books = this.state.books.filter(book => book._id !== id);
     console.log(this.state.books.filter(book => book.id !== id))
     console.log(this.state.books)
-    API.deleteBook(id);
-    this.setState({ books: books });
+    API.deleteBook(id).then(() => {
+      API.getAllBooks()
+    .then(res => {
+      console.log(res.data)
+      this.setState({ books: res.data })
+    })
+    .catch(err => console.log(err));
+    });
+    // this.setState({ books: books });
   };
+  // removeBook = id => {
+  //   API.deleteBook(id)
+  //     .then(res => this.loadBooks())
+  //     .catch(err => console.log(err));
+  // };
+
+
 
   saveBook = id => {
+    API.saveBook(id)
+    .then(res => this.loadBooks())
+    .catch(err => console.log(err));
     //put it in mongo database
   }
 
@@ -35,19 +52,12 @@ class App extends Component {
     });
   };
 
+
   handleFormSubmit = event => {
     event.preventDefault();
     API.getBooks(this.state.bookSearch).then(res => {
-      var newArr = []
-      console.log(res.data)
-      for (var i = 0; i < res.data.items.length; i++) {
-        if (res.data.items[i].volumeInfo.imageLinks &&
-          res.data.items[i].volumeInfo.authors &&
-          res.data.items[i].volumeInfo.description) {
-            newArr.push(res.data.items[i].volumeInfo)
-        }
-      }
-      this.setState({ books: newArr })
+      console.log(res)
+      this.setState({ books: res.data })
     })
   };
 
@@ -93,14 +103,14 @@ class App extends Component {
                     {this.state.books.map(book => {
                       return (
                         <BookListItem
-                          key={book.title}
-                          id={book.industryIdentifiers[0].identifier}
+                          key={book._id}
+                          id={book._id}
                           removeBook={this.removeBook}
                           title={book.title}
-                          authors={book.authors.join(", ")}
+                          authors={book.authors}
                           href={book.infoLink}
                           description={book.description}
-                          thumbnail={book.imageLinks.thumbnail}
+                          thumbnail={book.image}
                         />
                       );
                     })}

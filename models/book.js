@@ -4,9 +4,18 @@ const Schema = mongoose.Schema;
 const bookSchema = new Schema({
   title: String,
   authors: String,
-  description: String,
-  image: String,
-  infoLink: String,
+  description: {
+    type: String,
+    default: "placeholder description"
+  },
+  image: {
+    type: String,
+    default: "https://placehold.it/300x300"
+  },
+  infoLink: {
+    type: String,
+    default: "https://placehold.it/300x300"
+  },
   date: { type: Date, default: Date.now }
 });
 

@@ -1,7 +1,7 @@
 const axios = require("axios");
 const router = require("express").Router();
 const db = require("../models")
-var newArr = []
+
 const apiKey = "AIzaSyDuLe6erooqM6DzaLkOEiL7d26Wq0SulS0"
 router.get("/books", (req, res) => {
   console.log(req.query)
@@ -14,15 +14,18 @@ router.get("/books", (req, res) => {
       }
     })
     .then((results) => {
-
-      res.json(results.data);
+      var newArr = []
       for (var i = 0; i < results.data.items.length; i++) {
         newArr.push(results.data.items[i].volumeInfo)
       }
       db.Book.remove({}).then(() => {
         // images are in here now but still have to use mongoDB to render things
         db.Book.create(newArr).then(() => {
+          
           for (var i = 0; i < newArr.length; i++) {
+            if (!newArr[i].imageLinks){
+              i++
+            }
             db.Book.findOneAndUpdate({'title': newArr[i].title }, {'image': newArr[i].imageLinks.thumbnail}, function (error, found) {
               if (error) {
                 console.log(error);
@@ -34,15 +37,22 @@ router.get("/books", (req, res) => {
             })
           }
         }).then(() => {
-            db.Book.findOne({ 'title': newArr[0].title }).then((data) => {
-              console.log(data)
-              // res.json(data)
+            db.Book.find({}).then((data) => {
+              // console.log(data)
+              res.json(data)
             })
           })
       })
     })
     .catch(err => res.status(422).json(err));
 });
+
+router.get("/books/all", (req, res) => {
+  db.Book.find({}).then((data) => {
+    // console.log(data)
+    res.json(data)
+  })
+})
 
 router.delete("/books/:id", function (req, res) {
 
@@ -56,4 +66,19 @@ router.delete("/books/:id", function (req, res) {
     });
 });
 
+
+
 module.exports = router;
+
+//saveBook pseudocode
+// post for /books
+
+
+// get post request from client 
+// get id from request
+// find the book with their id by matching
+// if not found, send err
+// if found, send back successful
+// maybe show them in front end alert
+
+// must save book that was found to a favorities database

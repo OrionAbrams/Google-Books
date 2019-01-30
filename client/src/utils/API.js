@@ -7,9 +7,9 @@ export default {
     return axios.get("/api/books", { params: { q: query } });
   },
   // Gets all books
-  // getBooks: function () {
-  //   return axios.get("/api/books");
-  // },
+  getAllBooks: function (bookData) {
+    return axios.get("/api/books/all", bookData);
+  },
   // Gets the book with the given id
   getBook: function (id) {
     return axios.get("/api/books/" + id);
