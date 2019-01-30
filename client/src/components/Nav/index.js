@@ -1,17 +1,21 @@
 import React from "react";
 import "./style.css";
 
-function Nav() {
+const Nav = (props) => {
   return (
     <nav className="navbar navbar-dark bg-dark">
-      <a className="navbar-brand" href="/">
+      <button className="navbar-brand btn-info" href="/">
         Search for Books
-      </a>
-     <a className="navbar-brand" href="/">
+      </button>
+     <button onClick={() => props.displaySaved()} className="navbar-brand btn-info">
         Saved Books
-      </a>
+      </button>
+      <button onClick={() => props.deleteAllSaved()} className="navbar-brand btn-info">
+        Delete all Saved Books
+      </button>
     </nav>
   );
 }
+
 
 export default Nav;

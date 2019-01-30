@@ -5,11 +5,13 @@ import Input from "./components/Input";
 import Button from "./components/Button";
 import API from "./utils/API";
 import { BookList, BookListItem } from "./components/BookList";
+import { SavedBookList, SavedBookListItem } from "./components/SavedBookList";
 import { Container, Row, Col } from "./components/Grid";
 
 class App extends Component {
   state = {
     books: [],
+    savedBooks: [],
     bookSearch: ""
   };
 
@@ -31,32 +33,39 @@ class App extends Component {
     });
   };
 
-  deleteAllSaved(){
+  deleteAllSaved = () => {
     API.deleteSaved()
     .then(() => {
       alert("All saved books deleted!")
-    })
+    }).then (() => {
+      API.getAllSavedBooks().then((res) => {
+        console.log(res.data)
+        this.setState({ savedBooks: res.data, books: [] })
+      })
+    })   
+    .catch(err => console.log(err));
   }
   saveBook = id => {
     API.saveBook(id)
     .then(res => {
       API.getAllSavedBooks().then((res) => {
         console.log(res.data)
-        this.setState({ books: res.data })
+        // this.setState({ books: [] })
+        this.setState({ savedBooks: res.data, books: [] })
       })
       
     })
     .catch(err => console.log(err));
   };
 
-  displaySaved = id => {
-    API.getAllSavedBooks()
-    .then(res => {
-      console.log(res.data)
-      this.setState({ books: res.data })
-    })
-    .catch(err => console.log(err));
-  };
+  // could not get it to understand this.setState here, because it isn't part of component function like the others
+  displaySaved= () => {
+      API.getAllSavedBooks().then((res) => {
+        console.log(res.data)
+        this.setState({ savedBooks: res.data, books: [] })
+      })
+      .catch(err => console.log(err));
+    };
 
   handleInputChange = event => {
     const { name, value } = event.target;
@@ -77,7 +86,9 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Nav />
+        <Nav displaySaved={this.displaySaved} 
+        deleteAllSaved={this.deleteAllSaved}
+        />
         <Jumbotron />
         <Container>
           <Row>
@@ -110,7 +121,7 @@ class App extends Component {
           <Row>
             <Col size="xs-12">
               {!this.state.books.length ? (
-                <h1 className="text-center">No Books to Display</h1>
+                <h1 className="text-center">Search for a Book!</h1>
               ) : (
                   <BookList>
                     {this.state.books.map(book => {
@@ -128,12 +139,30 @@ class App extends Component {
                         />
                       );
                     })}
-                  </BookList>
+                    </BookList>
                 )}
+                {!this.state.savedBooks.length ? (
+                <h1 className="text-center">No Saved Books to Display</h1>
+              ) : (
+                 <SavedBookList>
+                    {this.state.savedBooks.map(savedBook => {
+                      return (
+                        <SavedBookListItem
+                          key={savedBook._id}
+                          id={savedBook._id}
+                          title={savedBook.title}
+                          authors={savedBook.authors}
+                          href={savedBook.infoLink}
+                          description={savedBook.description}
+                          thumbnail={savedBook.image}
+                        />
+                      );
+                    })}
+                  </SavedBookList>
+                   )}
             </Col>
           </Row>
         </Container>
-        <button onClick={this.deleteAllSaved}>Delete All Saved Books?</button>
       </div>
     );
   }
