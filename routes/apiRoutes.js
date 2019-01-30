@@ -23,7 +23,7 @@ router.get("/books", (req, res) => {
           //trying to make an undefined image in mongoose breaks whole app, so this skips past books apis without images
           for (var i = 0; i < newArr.length; i++) {
             if (!newArr[i].imageLinks) {
-              i++
+              return
             }
             db.Book.findOneAndUpdate({ 'title': newArr[i].title }, { 'image': newArr[i].imageLinks.thumbnail }, function (error, found) {
               if (error) {
