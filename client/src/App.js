@@ -33,6 +33,16 @@ class App extends Component {
     });
   };
 
+  removeSavedBook = id => {
+    API.deleteSavedBook(id).then(() => {
+      API.getAllSavedBooks().then((res) => {
+        console.log(res.data)
+        this.setState({ savedBooks: res.data, books: [] })
+      })
+    .catch(err => console.log(err));
+    });
+  };
+
   deleteAllSaved = () => {
     API.deleteSaved()
     .then(() => {
@@ -50,7 +60,6 @@ class App extends Component {
     .then(res => {
       API.getAllSavedBooks().then((res) => {
         console.log(res.data)
-        // this.setState({ books: [] })
         this.setState({ savedBooks: res.data, books: [] })
       })
       
@@ -150,6 +159,7 @@ class App extends Component {
                         <SavedBookListItem
                           key={savedBook._id}
                           id={savedBook._id}
+                          removeSavedBook={this.removeSavedBook}
                           title={savedBook.title}
                           authors={savedBook.authors}
                           href={savedBook.infoLink}

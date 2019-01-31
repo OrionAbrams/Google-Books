@@ -98,6 +98,17 @@ router.delete("/books/:id", function (req, res) {
     });
 });
 
+router.delete("/books/saved/:id", function (req, res) {
+
+  db.Savedbook.findById(req.params.id)
+    .remove()
+    .then(function (dbBook) {
+      res.json(dbBook);
+    })
+    .catch(function (err) {
+      res.json(err);
+    });
+});
 
 
 module.exports = router;

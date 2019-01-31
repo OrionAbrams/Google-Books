@@ -23,6 +23,9 @@ export function SavedBookListItem(props) {
             <a rel="noreferrer noopener" target="_blank" href={props.href}>
               More book information at Google Books!
             </a>
+            <button onClick={() => props.removeSavedBook(props.id)} className="remove">
+        Delete Saved Book
+      </button>
           </Col>
         </Row>
       </Container>

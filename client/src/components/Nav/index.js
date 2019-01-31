@@ -4,13 +4,13 @@ import "./style.css";
 const Nav = (props) => {
   return (
     <nav className="navbar navbar-dark bg-dark">
-      <button className="navbar-brand btn-info" href="/">
+      <a className="navbar-brand btn btn-link" href="/">
         Search for Books
-      </button>
-     <button onClick={() => props.displaySaved()} className="navbar-brand btn-info">
+      </a>
+     <button onClick={() => props.displaySaved()} className="navbar-brand btn btn-link">
         Saved Books
       </button>
-      <button onClick={() => props.deleteAllSaved()} className="navbar-brand btn-info">
+      <button onClick={() => props.deleteAllSaved()} className="navbar-brand btn btn-link">
         Delete all Saved Books
       </button>
     </nav>
