@@ -9,4 +9,4 @@
   The most satisfying challenge i conquered was when I realized the app crashes when mongo tries to update an image with 'undefined', and some of the Google Books API results come back without images. I thought to simply make a loop and check for images not being there like !images and skip over the ones that aren't there (with return) and continuing the loop. A simple fix, but I was surprised and happy that I could come up with something like that on my own having never seen it before, given my newness to programming.
 
 # Live app
-  [a link](https://google-books-react-orion.herokuapp.com/)
+  [Google Books Search](https://google-books-react-orion.herokuapp.com/)
