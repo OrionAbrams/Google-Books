@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from "react"
 import Jumbotron from "./components/Jumbotron";
 import Nav from "./components/Nav";
 import Input from "./components/Input";
@@ -13,90 +13,82 @@ class App extends Component {
     books: [],
     savedBooks: [],
     bookSearch: ""
-  };
-
-  componentDidMount(){
-    API.getAllBooks()
-    .then(res => {
-      console.log(res.data)
-      this.setState({ books: res.data })
-    })
   }
+
+  componentDidMount() {
+    API.getAllBooks()
+      .then(res => {
+        this.setState({ books: res.data })
+      })
+      .catch(err => console.log(err))
+  }
+
   removeBook = id => {
     API.deleteBook(id).then(() => {
       API.getAllBooks()
-    .then(res => {
-      console.log(res.data)
-      this.setState({ books: res.data })
+        .then(res => {
+          this.setState({ books: res.data })
+        })
+        .catch(err => console.log(err))
     })
-    .catch(err => console.log(err));
-    });
-  };
+  }
 
   removeSavedBook = id => {
     API.deleteSavedBook(id).then(() => {
       API.getAllSavedBooks().then((res) => {
-        console.log(res.data)
         this.setState({ savedBooks: res.data, books: [] })
       })
-    .catch(err => console.log(err));
-    });
-  };
+        .catch(err => console.log(err))
+    })
+  }
 
   deleteAllSaved = () => {
     API.deleteSaved()
-    .then(() => {
-      alert("All saved books deleted!")
-    }).then (() => {
-      API.getAllSavedBooks().then((res) => {
-        console.log(res.data)
-        this.setState({ savedBooks: res.data, books: [] })
+      .then(() => {
+        alert("All saved books deleted!")
+      }).then(() => {
+        API.getAllSavedBooks().then((res) => {
+          this.setState({ savedBooks: res.data, books: [] })
+        })
       })
-    })   
-    .catch(err => console.log(err));
+      .catch(err => console.log(err))
   }
   saveBook = id => {
     API.saveBook(id)
-    .then(res => {
-      API.getAllSavedBooks().then((res) => {
-        console.log(res.data)
-        this.setState({ savedBooks: res.data, books: [] })
+      .then(() => {
+        API.getAllSavedBooks().then((res) => {
+          this.setState({ savedBooks: res.data, books: [] })
+        })
       })
-      
-    })
-    .catch(err => console.log(err));
-  };
+      .catch(err => console.log(err))
+  }
 
-  // could not get it to understand this.setState here, because it isn't part of component function like the others
-  displaySaved= () => {
-      API.getAllSavedBooks().then((res) => {
-        console.log(res.data)
-        this.setState({ savedBooks: res.data, books: [] })
-      })
-      .catch(err => console.log(err));
-    };
+  displaySaved = () => {
+    API.getAllSavedBooks().then((res) => {
+      this.setState({ savedBooks: res.data, books: [] })
+    })
+      .catch(err => console.log(err))
+  }
 
   handleInputChange = event => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     this.setState({
       [name]: value
-    });
-  };
-
+    })
+  }
 
   handleFormSubmit = event => {
-    event.preventDefault();
+    event.preventDefault()
     API.getBooks(this.state.bookSearch).then(res => {
-      console.log(res)
       this.setState({ books: res.data })
     })
-  };
+  }
 
   render() {
     return (
       <div>
-        <Nav displaySaved={this.displaySaved} 
-        deleteAllSaved={this.deleteAllSaved}
+        <Nav displaySaved={this.displaySaved}
+          deleteAllSaved={this.deleteAllSaved}
         />
         <Jumbotron />
         <Container>
@@ -129,9 +121,9 @@ class App extends Component {
           </Row>
           <Row>
             <Col size="xs-12">
-              {!this.state.books.length ? (
-                <h1 className="text-center">Search for a Book!</h1>
-              ) : (
+              <br></br>
+              {this.state.books.length ?
+                (
                   <BookList>
                     {this.state.books.map(book => {
                       return (
@@ -146,14 +138,13 @@ class App extends Component {
                           description={book.description}
                           thumbnail={book.image}
                         />
-                      );
+                      )
                     })}
-                    </BookList>
-                )}
-                {!this.state.savedBooks.length ? (
-                <h1 className="text-center">No Saved Books to Display</h1>
-              ) : (
-                 <SavedBookList>
+                  </BookList>
+                ) : null}
+              {this.state.savedBooks.length ?
+                (
+                  <SavedBookList>
                     {this.state.savedBooks.map(savedBook => {
                       return (
                         <SavedBookListItem
@@ -166,17 +157,17 @@ class App extends Component {
                           description={savedBook.description}
                           thumbnail={savedBook.image}
                         />
-                      );
+                      )
                     })}
                   </SavedBookList>
-                   )}
+                ) : null}
             </Col>
           </Row>
         </Container>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
 
